@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
@@ -13,7 +17,7 @@ import com.leilao.backend.repository.PersonRepository;
 import jakarta.mail.MessagingException;
 
 @Service
-public class PersonService {
+public class PersonService implements UserDetailsService{
 
     @Autowired
     private PersonRepository personRepository;
@@ -21,10 +25,15 @@ public class PersonService {
     @Autowired
     private EmailService emailService;
 
+
+
+
+
     public Person create(Person person) {
+        //person.setPassword(passwordEncoder.encode(person.getPassword()));
         Person personSaved = personRepository.save(person);
-        System.out.println(personSaved.getName());
-        System.out.println(personSaved.getEmail());
+
+
         Context context = new Context();
         context.setVariable("name", personSaved.getName());
         try {
@@ -46,5 +55,11 @@ public class PersonService {
         personSaved.setEmail(person.getEmail());
 
         return personRepository.save(personSaved);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return personRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }
