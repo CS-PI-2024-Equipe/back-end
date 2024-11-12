@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,6 +50,7 @@ public class Person implements UserDetails {
     private String name;
 
     @Email(message = "{name.invalid}")
+    @UniqueElements(message = "E-mail já cadastrado")
     private String email;
 
     // @CPF
@@ -66,7 +68,7 @@ public class Person implements UserDetails {
 
     @JsonIgnore
     @Column(name = "validation_code")
-    private String validationCode;
+    private Integer validationCode;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date validationCodeValidity;
