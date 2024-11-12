@@ -6,7 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import com.leilao.backend.model.PersonAuthDTO;
+import com.leilao.backend.model.PersonAuthRequestDTO;
 import com.leilao.backend.security.JwtService;
 
 @RestController
@@ -20,7 +20,7 @@ public class AuthController {
     private JwtService jwtService;
 
     @PostMapping("/login")
-    public String authenticateUser(@RequestBody PersonAuthDTO authRequest) {
+    public String authenticateUser(@RequestBody PersonAuthRequestDTO authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.getEmail(), authRequest.getPassword())

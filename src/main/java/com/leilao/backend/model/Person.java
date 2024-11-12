@@ -39,8 +39,8 @@ import lombok.Setter;
 @Entity
 @Data
 @Table(name = "person")
-@JsonIgnoreProperties({"authorities"})
-public class Person implements UserDetails{
+@JsonIgnoreProperties({ "authorities", "cpf" })
+public class Person implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,13 +54,10 @@ public class Person implements UserDetails{
     // @CPF
     private String cpf;
 
-    // @Min(0)
-    // private int idade;
-
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-        @Transient
+    @Transient
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public void setPassword(String password) {
@@ -71,10 +68,9 @@ public class Person implements UserDetails{
     @Column(name = "validation_code")
     private String validationCode;
 
-    // @Temporal(TemporalType.TIMESTAMP)
-    // private Date validationCodeValidity;
-    @JsonIgnore
-    private LocalDateTime validationCodeValidity;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date validationCodeValidity;
+
     @OneToMany(mappedBy = "person", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Setter(value = AccessLevel.NONE)
     private List<PersonProfile> personProfile;
@@ -88,13 +84,13 @@ public class Person implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-    return personProfile.stream()
+        return personProfile.stream()
                 .map(userRole -> new SimpleGrantedAuthority(userRole.getProfile().getName()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public String getUsername() {
-       return email;
+        return email;
     }
 }

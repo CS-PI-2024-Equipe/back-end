@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leilao.backend.model.Person;
-import com.leilao.backend.model.PersonAuthDTO;
+import com.leilao.backend.model.PersonAuthRequestDTO;
+import com.leilao.backend.model.PersonAuthResponseDTO;
 import com.leilao.backend.security.JwtService;
 import com.leilao.backend.service.PersonService;
 
@@ -31,14 +32,13 @@ public class PersonController {
     @Autowired
     private JwtService jwtService;
 
- 
-
     @PostMapping("/login")
-    public String authenticateUser(@RequestBody PersonAuthDTO authRequest) {
+    public PersonAuthResponseDTO authenticateUser(@RequestBody PersonAuthRequestDTO authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.getEmail(), authRequest.getPassword()));
-        return jwtService.generateToken(authentication.getName());
+        return new PersonAuthResponseDTO(
+                authRequest.getEmail(), jwtService.generateToken(authentication.getName()));
     }
 
     @PostMapping
