@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,7 @@ import com.leilao.backend.model.PersonAuthResponseDTO;
 import com.leilao.backend.security.JwtService;
 import com.leilao.backend.service.PersonService;
 
+import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
 
 @RestController
@@ -33,6 +36,13 @@ public class PersonController {
 
     @Autowired
     private JwtService jwtService;
+      @Transient
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @GetMapping("/senha")
+    public String create() {
+        return passwordEncoder.encode("123");
+    }
 
     @PostMapping("/login")
     public PersonAuthResponseDTO authenticateUser(@RequestBody PersonAuthRequestDTO authRequest) {

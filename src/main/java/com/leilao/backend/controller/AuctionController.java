@@ -3,7 +3,6 @@ package com.leilao.backend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,37 +13,41 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.leilao.backend.model.Category;
-import com.leilao.backend.service.CategoryService;
+import com.leilao.backend.model.Auction;
+import com.leilao.backend.service.AuctionService;
+
+import jakarta.websocket.server.PathParam;
 
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/auction")
 @CrossOrigin
-public class CategoryController {
+public class AuctionController {
 
     @Autowired
-    private CategoryService categoryService;
+    private AuctionService auctionService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public Category create(@RequestBody Category category) {
-        return categoryService.create(category);
+    public Auction create(@RequestBody Auction auction) {
+        return auctionService.create(auction);
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public Category update(@RequestBody Category category) {
-        return categoryService.create(category);
+    public Auction update(@RequestBody Auction auction) {
+        return auctionService.create(auction);
     }
 
     @GetMapping
-    public List<Category> listAll() {
-        return categoryService.listAll();
+    public List<Auction> listAll() {
+        return auctionService.listAll();
+    }
+
+    @GetMapping("/public")
+    public List<Auction> listAllPublic() {
+        return auctionService.listAllPublic();
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable("id") Long id) {
-        categoryService.delete(id);
+        auctionService.delete(id);
     }
 }
